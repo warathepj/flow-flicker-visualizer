@@ -61,6 +61,7 @@ const ConveyorSimulator: React.FC = () => {
   // Animation loop
   const animate = useCallback((timestamp: number) => {
     if (!isRunning) return;
+    if (currentRate === 0) return;
 
     const deltaTime = timestamp - lastProductTime.current;
     const productInterval = calculateProductInterval(currentRate);
@@ -179,7 +180,7 @@ const ConveyorSimulator: React.FC = () => {
           <CardContent className="p-0 relative">
             <div className="relative h-64 bg-gradient-to-b from-gray-50 to-gray-100 overflow-hidden">
               {/* Conveyor Belt */}
-              <ConveyorBelt isRunning={isRunning} />
+              <ConveyorBelt isRunning={isRunning && currentRate > 0} />
               
               {/* Products */}
               {products.map(product => (
