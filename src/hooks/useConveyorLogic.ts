@@ -9,10 +9,10 @@ export const useConveyorLogic = () => {
     if (random < 0.3) {
       // 30% chance: 60 pieces per minute
       return 60;
-    } else if (random < 0.45) {
+    } else if (random < 0.8) {
       // 15% chance: 10-50 pieces per minute
       return Math.floor(Math.random() * 41) + 10;
-    } else if (random < 0.55) {
+    } else if (random < 0.85) {
       // 10% chance: 70-80 pieces per minute
       return Math.floor(Math.random() * 11) + 70;
     } else {
