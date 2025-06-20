@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -100,4 +101,44 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom animations for conveyor system */
+@keyframes move-belt {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(20px);
+  }
+}
+
+@keyframes move-indicator {
+  0% {
+    transform: translateX(-800px) translateY(-50%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100vw) translateY(-50%);
+    opacity: 0;
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: -25%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.animate-shine {
+  animation: shine 3s ease-in-out infinite;
 }
