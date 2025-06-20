@@ -6,17 +6,17 @@ export const useConveyorLogic = () => {
   const getRandomRate = useCallback((): number => {
     const random = Math.random();
     
-    if (random < 0.5) {
-      // 50% chance: 60 pieces per minute
+    if (random < 0.3) {
+      // 30% chance: 60 pieces per minute
       return 60;
-    } else if (random < 0.8) {
-      // 30% chance: 10-50 pieces per minute
+    } else if (random < 0.45) {
+      // 15% chance: 10-50 pieces per minute
       return Math.floor(Math.random() * 41) + 10;
-    } else if (random < 0.9) {
+    } else if (random < 0.55) {
       // 10% chance: 70-80 pieces per minute
       return Math.floor(Math.random() * 11) + 70;
     } else {
-      // 10% chance: 0 pieces per minute (stopped)
+      // 45% chance: 0 pieces per minute (stopped)
       return 0;
     }
   }, []);
