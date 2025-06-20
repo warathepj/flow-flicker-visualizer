@@ -11,6 +11,8 @@ interface StatsPanelProps {
   lastRateChange: number;
 }
 
+const WS_URL = 'ws://localhost:8765';
+
 const StatsPanel: React.FC<StatsPanelProps> = ({
   currentRate,
   totalProduced,
@@ -31,6 +33,59 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
 
     return () => clearInterval(interval);
   }, [lastRateChange]);
+
+  const wsRef = React.useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    const connectWebSocket = () => {
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        return; // Already connected
+      }
+
+      const ws = new WebSocket(WS_URL);
+
+      ws.onopen = () => {
+        console.log('WebSocket connected');
+        wsRef.current = ws;
+        // Send initial data upon connection
+        if (currentRate !== undefined && totalProduced !== undefined) {
+          ws.send(JSON.stringify({ currentRate, totalProduced }));
+        }
+      };
+
+      ws.onmessage = (event) => {
+        console.log('Message from server:', event.data);
+      };
+
+      ws.onclose = (event) => {
+        console.log('WebSocket closed:', event.code, event.reason);
+        wsRef.current = null;
+        // Attempt to reconnect after a delay
+        setTimeout(connectWebSocket, 3000);
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        wsRef.current?.close();
+      };
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+    };
+  }, []); // Empty dependency array to run only once on mount
+
+  useEffect(() => {
+    // This effect sends data whenever currentRate or totalProduced changes
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ currentRate, totalProduced }));
+    }
+  }, [currentRate, totalProduced]);
 
   const getRateStatusColor = () => {
     if (currentRate === 0) return 'text-red-600';
