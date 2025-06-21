@@ -47,10 +47,6 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
       ws.onopen = () => {
         console.log('WebSocket connected');
         wsRef.current = ws;
-        // Send initial data upon connection
-        if (currentRate !== undefined && totalProduced !== undefined) {
-          ws.send(JSON.stringify({ currentRate, totalProduced }));
-        }
       };
 
       ws.onmessage = (event) => {
@@ -81,11 +77,11 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
   }, []); // Empty dependency array to run only once on mount
 
   useEffect(() => {
-    // This effect sends data whenever currentRate or totalProduced changes
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+    // This effect sends data whenever currentRate or totalProduced changes, but only if the simulation is running
+    if (isRunning && wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ currentRate, totalProduced }));
     }
-  }, [currentRate, totalProduced]);
+  }, [currentRate, totalProduced, isRunning]);
 
   const getRateStatusColor = () => {
     if (currentRate === 0) return 'text-red-600';
